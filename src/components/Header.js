@@ -3,7 +3,7 @@ import Logo from '../logo.svg';
 import {Link} from 'react-router-dom';
 function Header() {
     return (
-        <div>
+        <header>
             <img src={Logo}/>
             <nav>
                 <Link to='/'>首页</Link>
@@ -11,7 +11,7 @@ function Header() {
                 <Link to='/about'>关于我</Link>
             </nav>
 
-        </div>
+        </header>
     );
 }
 
