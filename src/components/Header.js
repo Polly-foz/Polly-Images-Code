@@ -32,6 +32,7 @@ export default function() {
                 <StyledLink to='/history' exact activeClassName="active">上传历史</StyledLink>
                 <StyledLink to='/about' exact activeClassName="active">关于我</StyledLink>
                 <StyledLink to='/login' exact activeClassName="active">登录</StyledLink>
+                <StyledLink to='/register' exact activeClassName="active">注册</StyledLink>
             </nav>
 
         </Header>
