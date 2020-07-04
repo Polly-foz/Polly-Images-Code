@@ -1,6 +1,7 @@
 import React from "react";
 import {Form, Input, Button} from 'antd';
 import styled from "styled-components";
+import {useStores} from "../stores";
 
 const Wrapper = styled.div`
     max-width: 600px;
@@ -29,8 +30,17 @@ const tailLayout = {
 };
 
 const Component = () => {
+    const {AuthStore} = useStores();
+
     const onFinish = values => {
         console.log('Success:', values);
+        AuthStore.setUsername(values.username);
+        AuthStore.setPassword(values.password);
+        AuthStore.register().then(() => {
+            window.alert("Register-注册成功");
+        }).catch(() => {
+            window.alert("Register-注册失败");
+        });
     };
 
     const onFinishFailed = errorInfo => {
@@ -55,14 +65,14 @@ const Component = () => {
                             message: '输入用户名',
                         },
                         {
-                            min:4,
-                            max:10,
-                            message:'长度为4～10个字符'
+                            min: 4,
+                            max: 10,
+                            message: '长度为4～10个字符'
                         },
-                        ()=>({
-                            validator(rule,value){
-                                if(/\W/.test(value)){
-                                    return Promise.reject('只能包含数字字母和下划线')
+                        () => ({
+                            validator(rule, value) {
+                                if (/\W/.test(value)) {
+                                    return Promise.reject('只能包含数字字母和下划线');
                                 }
                                 return Promise.resolve();
                             }
@@ -95,7 +105,7 @@ const Component = () => {
                             required: true,
                             message: '再次确认密码',
                         },
-                        ({ getFieldValue }) => ({
+                        ({getFieldValue}) => ({
                             validator(rule, value) {
                                 if (!value || getFieldValue('password') === value) {
                                     return Promise.resolve();

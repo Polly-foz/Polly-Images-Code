@@ -1,16 +1,11 @@
 import {observable, action} from "mobx";
+import {Auth} from "../models";
 
 class AuthStore {
-    @observable isLogin = false;
-    @observable isLoading = false;
     @observable values = {
         username: 'user A',
         password: ''
     };
-
-    @action setIsLogin(isLogin) {
-        this.isLogin = isLogin;
-    }
 
     @action setUsername(username) {
         this.values.username = username;
@@ -21,27 +16,33 @@ class AuthStore {
     }
 
     @action login() {
-        console.log('登录中。。。');
-        this.isLoading = true;
-        setTimeout(() => {
-            console.log('登录成功')
-            this.isLogin = true;
-            this.isLoading = false;
-        }, 1000);
+        return new Promise((resolve, reject) => {
+            Auth.login(this.values.username, this.values.password).then(user => {
+                window.alert("登录成功!" + this.values.username);
+                resolve(user);
+            }).catch(error => {
+                window.alert("登录失败!" + error);
+                reject(error);
+            });
+        });
+
     }
 
     @action register() {
-        console.log('注册中。。。');
-        this.isLoading = true;
-        setTimeout(() => {
-            console.log('注册成功')
-            this.isLogin = true;
-            this.isLoading = false;
-        }, 1000);
+        return new Promise((resolve, reject) => {
+            Auth.register(this.values.username, this.values.password).then(user => {
+                window.alert("注册成功!" + this.values.username);
+                resolve(user);
+            }).catch(error => {
+                window.alert("注册失败!" + error);
+                reject(error);
+            });
+        });
     }
 
-    @action logout(){
-        console.log('已注销')
+    @action logout() {
+        Auth.logout();
+        window.alert("已注销！");
     }
 }
 
