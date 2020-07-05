@@ -28,7 +28,7 @@ const Auth = {
             });
         });
     },
-    logOut() {
+    logout() {
         User.logOut();
     },
     getCurrentUser(){

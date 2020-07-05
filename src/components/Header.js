@@ -1,8 +1,10 @@
 import React from 'react';
 import LogoUrl from '../logo.svg';
-import {NavLink} from 'react-router-dom';
+import {NavLink,useHistory} from 'react-router-dom';
 import styled from 'styled-components';
 import {Button} from 'antd';
+import {useStores} from "../stores";
+import {observer} from "mobx-react";
 
 const Header = styled.header`
     background-color:#001529;
@@ -37,8 +39,22 @@ const Login = styled.div`
     
 `;
 
-export default function () {
-    const [isLogin, setIsLogin] = React.useState(false);
+const Component = observer((props) => {
+    const {AuthStore, UserStore} = useStores();
+    const history = useHistory();
+    const handleLogin = () => {
+        history.push('/login')
+    };
+
+    const handleLogout = () => {
+        AuthStore.logout();
+        history.push('/')
+    };
+
+    const handleRegister = () => {
+        history.push('/register')
+    };
+
     return (
         <Header>
             <Logo src={LogoUrl}/>
@@ -49,21 +65,20 @@ export default function () {
             </StyledNav>
             <Login>
                 {
-                    isLogin === true ?
+                    UserStore.currentUser ?
                         <>
-                            user A
-                            <StyledButton type="primary" onClick={()=>setIsLogin(false)}>注销</StyledButton>
-                        </>:
+                            {UserStore.currentUser.attributes.username}
+                            <StyledButton type="primary" onClick={handleLogout}>注销</StyledButton>
+                        </> :
                         <>
-                            <StyledButton type="primary" onClick={()=>setIsLogin(true)}>登录</StyledButton>
-                            <StyledButton type="primary">注册</StyledButton>
+                            <StyledButton type="primary" onClick={handleLogin}>登录</StyledButton>
+                            <StyledButton type="primary" onClick={handleRegister}> 注册 </StyledButton>
                         </>
                 }
-                {/*<StyledLink to='/login' exact activeClassName="active">登录</StyledLink>*/}
-                {/*<StyledLink to='/register' exact activeClassName="active">注册</StyledLink>*/}
             </Login>
-
         </Header>
     );
-}
+});
+
+export default Component;
 
