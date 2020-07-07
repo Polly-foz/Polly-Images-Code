@@ -31,25 +31,32 @@ const Auth = {
     logout() {
         User.logOut();
     },
-    getCurrentUser(){
-        return User.current()
+    getCurrentUser() {
+        return User.current();
     }
 
 };
 
-/*console.log('start sign up .......');
-// LeanCloud - 注册
-// https://leancloud.cn/docs/leanstorage_guide-js.html#注册
-const username = "polly1";
-const password = "pollyyyy";
-var user = new AV.User();
-user.setUsername(username);
-user.setPassword(password);
-user.signUp().then(function (loginedUser) {
-    // 注册成功，跳转到商品 list 页面
-    console.log("sign up successfully!!!");
-}, (function (error) {
-    alert(JSON.stringify(error));
-}));*/
+const Uploader = {
+    add(file, filename) {
+        const item = new AV.Object('Image');
+        const avFile = new AV.File(filename, file);//有问题
+        item.set('filename', filename);
+        item.set('owner', AV.User.current());
+        item.set('url', avFile);
+        return new Promise((resolve, reject) => {
+            item.save().then(serverFile => {
+                    // console.log('保存成功');
+                    resolve(serverFile);
+                },
+                error => {
+                    // console.log('保存失败');
+                    reject(error);
+                });
+        });
 
-export {Auth};
+
+    }
+};
+
+export {Auth,Uploader};
