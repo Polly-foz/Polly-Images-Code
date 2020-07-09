@@ -1,18 +1,22 @@
 import React, {useRef} from 'react';
 import {useStores} from '../stores/index';
 import {observer} from "mobx-react";
-import { Upload } from 'antd';
-import { InboxOutlined } from '@ant-design/icons';
+import {Upload, message} from 'antd';
+import {InboxOutlined} from '@ant-design/icons';
 
-const { Dragger } = Upload;
+const {Dragger} = Upload;
 
 const Component = observer(() => {
-    const {ImageStore} = useStores();
+    const {ImageStore, UserStore} = useStores();
 
     const props = {
         beforeUpload: file => {
             ImageStore.setFile(file);
             ImageStore.setFilename(file.name);
+            if (UserStore.currentUser === null) {
+                message.warning('请先登录再上传');
+                return false;
+            }
             ImageStore.upload().then(serverFile => {
                 console.log("上传成功");
                 console.log(serverFile);
@@ -22,14 +26,14 @@ const Component = observer(() => {
             // console.log(file)
             return false;
         },
-        showUploadList:false
-    }
+        showUploadList: false
+    };
     return (
         <div>
             <h1>上传图片</h1>
             <Dragger {...props}>
                 <p className="ant-upload-drag-icon">
-                    <InboxOutlined />
+                    <InboxOutlined/>
                 </p>
                 <p className="ant-upload-text">Click or drag file to this area to upload</p>
                 <p className="ant-upload-hint">
@@ -37,9 +41,9 @@ const Component = observer(() => {
                     band files
                 </p>
             </Dragger>
-            {ImageStore.serverFile?<div>
+            {ImageStore.serverFile ? <div>
                 {ImageStore.serverFile.attributes.url.attributes.url}
-            </div>:null}
+            </div> : null}
         </div>
     );
 });
