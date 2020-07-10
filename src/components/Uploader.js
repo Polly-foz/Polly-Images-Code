@@ -1,6 +1,6 @@
 import React, {useRef} from 'react';
 import {useStores} from '../stores/index';
-import {observer} from "mobx-react";
+import {observer, useLocalStore} from "mobx-react";
 import {Upload, message} from 'antd';
 import {InboxOutlined} from '@ant-design/icons';
 import styled from "styled-components";
@@ -11,18 +11,40 @@ const Result = styled.div`
     margin-top:30px;
     padding: 20px;
     border: 1px dashed #ccc;
-`
+`;
 const H1 = styled.h1`
     margin: 20px 0;
     text-align: center;
-`
+`;
 const Image = styled.img`
     max-width: 400px;
-`
+`;
 
 
 const Component = observer(() => {
     const {ImageStore, UserStore} = useStores();
+    const refWidth = useRef();
+    const refHeight = useRef();
+    const store = useLocalStore(() => ({
+        width: null,
+        setWidth(width) {
+            store.width = width;
+        },
+        get widthStr() {
+            return store.width ? `/w/${store.width}` : '';
+        },
+        height: null,
+        setHeight(height) {
+            store.height = height;
+        },
+        get heightStr() {
+            return store.height ? `/h/${store.height}` : '';
+        },
+        get fullStr() {
+            return ImageStore.serverFile.attributes.url.attributes.url +
+                '?imageView2/0' + store.widthStr + store.heightStr;
+        }
+    }));
 
     const props = {
         beforeUpload: file => {
@@ -43,6 +65,14 @@ const Component = observer(() => {
         },
         showUploadList: false
     };
+
+    const bindWidthChange = () => {
+        store.setWidth(refWidth.current.value);
+    };
+    const bindHeightChange = () => {
+        store.setHeight(refHeight.current.value);
+    };
+
     return (
         <Result>
             <Dragger {...props}>
@@ -72,9 +102,14 @@ const Component = observer(() => {
                         <Image src={ImageStore.serverFile.attributes.url.attributes.url} alt=""/>
                     </dd>
                     <dt>更多尺寸</dt>
-                    <dd>...</dd>
+                    <dd>
+                        <input placeholder='最大宽度' ref={refWidth} onChange={bindWidthChange}/>
+                        <input placeholder='最大高度' ref={refHeight} onChange={bindHeightChange}/>
+                    </dd>
+                    <dd><a href={store.fullStr} target='_blank'>{store.fullStr}</a></dd>
                 </dl>
             </div> : null}
+
         </Result>
     );
 });
