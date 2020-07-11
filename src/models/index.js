@@ -1,6 +1,6 @@
 import AV, {Query, User} from 'leancloud-storage';
 
-console.log(AV);
+console.log('AV: ', AV);
 
 AV.init({
     appId: "5rNBCHoC93QGdT46Wto1Ouqk-gzGzoHsz",
@@ -54,9 +54,21 @@ const Uploader = {
                     reject(error);
                 });
         });
-
-
+    },
+    find({page = 0, limit = 10}) {
+        const query = new AV.Query('Image');
+        query.equalTo('owner', AV.User.current());
+        query.limit(limit);
+        query.skip(page * limit);
+        query.descending('createdAt');
+        query.include('owner');
+        return new Promise((resolve, reject) => {
+            query.find().then(results => resolve(results))
+                .catch(error => reject(error));
+        });
     }
 };
 
-export {Auth,Uploader};
+// window.Uploader = Uploader;
+
+export {Auth, Uploader};

@@ -1,5 +1,5 @@
 import React from "react";
-import {Form, Input, Button} from 'antd';
+import {Form, Input, Button, message} from 'antd';
 import styled from "styled-components";
 import {useStores} from "../stores";
 import {useHistory} from "react-router-dom"
@@ -42,9 +42,11 @@ const Component = () => {
             .then(()=>{
                 // window.alert("登录成功！")
                 history.push('/')
+                message.success('登录成功！')
             })
             .catch((error)=>{
-                window.alert("登录失败!"+error)
+                message.error("登录失败! " + error)
+
             })
     };
 
