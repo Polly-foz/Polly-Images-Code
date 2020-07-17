@@ -8,6 +8,6 @@ const context = createContext({
     AuthStore, UserStore, ImageStore,HistoryStore
 });
 
-// window.stores = {AuthStore, UserStore};
+window.stores = {AuthStore, UserStore,ImageStore,HistoryStore};
 
 export const useStores = () => useContext(context);

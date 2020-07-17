@@ -9,7 +9,9 @@ class HistoryStore {
     limit = 10;
 
     @action append(newList) {
-        this.list.concat(newList);
+        console.log('append-list',this.list)
+        console.log('append-newList',newList)
+        this.list = this.list.concat(newList);
     }
 
     @action find() {
@@ -21,15 +23,25 @@ class HistoryStore {
                     this.page++;
                     if(newList.length < this.limit){
                         this.hasMore = false;
+                        console.log('last page!')
                     }
                     resolve(newList);
+                    console.log('find!')
                 }).catch(error => {
                 reject(error);
+                console.log('error!')
             }).finally(() => {
                 this.isLoading = false;
             });
         });
 
+    }
+
+    @action reset(){
+        this.list = [];
+        this.isLoading = false;
+        this.hasMore = true;
+        this.page = 0;
     }
 }
 
