@@ -55,11 +55,31 @@ const Uploader = {
                 });
         });
     },
+
+    delete(avObject){
+        const item = AV.Object.createWithoutData('Image', avObject.id);
+        return new Promise((resolve,reject)=>{
+            item.destroy().then((result)=>resolve(result),(error)=>reject(error));
+        })
+
+    },
+
     find({page = 0, limit = 10}) {
         const query = new AV.Query('Image');
         query.equalTo('owner', AV.User.current());
         query.limit(limit);
         query.skip(page * limit);
+        query.descending('createdAt');
+        query.include('owner');
+        return new Promise((resolve, reject) => {
+            query.find().then(results => resolve(results))
+                .catch(error => reject(error));
+        });
+    },
+
+    findAll(){
+        const query = new AV.Query('Image');
+        query.equalTo('owner', AV.User.current());
         query.descending('createdAt');
         query.include('owner');
         return new Promise((resolve, reject) => {
