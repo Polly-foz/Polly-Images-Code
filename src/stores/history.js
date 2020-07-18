@@ -1,4 +1,4 @@
-import {observable, action} from "mobx";
+import {observable,computed, action} from "mobx";
 import {Uploader} from "../models";
 
 class HistoryStore {
@@ -6,7 +6,12 @@ class HistoryStore {
     @observable isLoading = false;
     @observable hasMore = true;
     @observable page = 0;
+    @observable filter = ()=>true;
     limit = 10;
+
+    @computed get filteredList(){
+        return this.list.filter(item=>this.filter(item))
+    }
 
     @action append(newList) {
         console.log('append-list', this.list);
@@ -72,9 +77,10 @@ class HistoryStore {
 
     }
 
-    @action filter(filter){
-        this.list = filter(this.list)
+    @action setFilter(filter){
+        this.filter = filter
     }
+
 }
 
 export default new HistoryStore();

@@ -2,113 +2,133 @@ import React, {useEffect} from "react";
 import {observer} from "mobx-react";
 import {useStores} from '../stores/index';
 // import {List,Spin} from "antd";
-import {Space,Button,Table} from "antd";
+import {Space, Button, Table, DatePicker, Spin} from "antd";
 import InfiniteScroll from 'react-infinite-scroller';
 import styled from "styled-components";
-import dayjs from 'dayjs'
+import dayjs from 'dayjs';
 
 const Component = observer(() => {
     const {HistoryStore} = useStores();
+    const {RangePicker} = DatePicker;
 
-    useEffect(()=>{
-        console.log('进入组件')
-        HistoryStore.findAll()
+    useEffect(() => {
+        console.log('进入组件');
+        HistoryStore.findAll();
         // HistoryStore.reset()
-        return ()=>{
-            console.log('退出组件')
-            HistoryStore.reset()
-        }
-    },[])
+        return () => {
+            console.log('退出组件');
+            HistoryStore.reset();
+        };
+    }, []);
 
-/*    const handleInfiniteOnLoad = ()=>{
-        HistoryStore.find()
-    }*/
-    const handleDelete = (avObject)=>{
-        window.avObject = avObject
+    const handleDelete = (avObject) => {
+        window.avObject = avObject;
         // console.log('delete-avObject',avObject)
-        HistoryStore.delete(avObject).then(result=>{console.log('删除成功',result)},error=>console.log("删除失败",error))
-    }
+        HistoryStore.delete(avObject).then(result => {
+            console.log('删除成功', result);
+        }, error => console.log("删除失败", error));
+    };
 
-    const data = HistoryStore.list;
+    const data = HistoryStore.filteredList;
     window.data = data;
     const columns = [
-/*        {
-            title:'cid',
-            render:(item)=>{
-                console.log(item)
-                return item.cid
-            }
-        },*/
         {
-            title:'图片',
-            key:'image',
-            dataIndex:'attributes',
-            render:(item)=>{
-                const url = item.url.attributes.url
+            title: '图片',
+            key: 'image',
+            dataIndex: 'attributes',
+            render: (item) => {
+                const url = item.url.attributes.url;
                 // console.log('url',url)
-                return <Img src={url}/>
+                return <Img src={url}/>;
             }
         },
         {
-            title:'名字',
-            key:'name',
-            dataIndex:'attributes',
-            render:(item)=>{
-                const filename = item.filename
-                return filename
+            title: '名字',
+            key: 'name',
+            dataIndex: 'attributes',
+            render: (item) => {
+                const filename = item.filename;
+                return filename;
             },
-            sorter:(a,b)=>{
+            sorter: (a, b) => {
                 return a.attributes.filename < b.attributes.filename;
             }
         },
         {
-            title:'Url',
-            key:'url',
-            dataIndex:'attributes',
-            render:(item)=>{
-                const url = item.url.attributes.url
+            title: 'Url',
+            key: 'url',
+            dataIndex: 'attributes',
+            render: (item) => {
+                const url = item.url.attributes.url;
                 // console.log('url',url)
-                return <a href={url}>{url}</a>
+                return <a href={url}>{url}</a>;
             }
         },
         {
-            title:'上传时间',
-            key:'createdAt',
-            dataIndex:'createdAt',
-            render:(time)=>{
+            title: '上传时间',
+            key: 'createdAt',
+            dataIndex: 'createdAt',
+            render: (time) => {
                 // console.log('time',time)
-                return dayjs(time).format('YYYY年MM月DD日 HH:mm:ss')
+                return dayjs(time).format('YYYY年MM月DD日 HH:mm:ss');
             },
-            sorter:(a,b)=>{
-                return dayjs(a.createdAt).isBefore(b.createdAt)
+            sorter: (a, b) => {
+                return dayjs(a.createdAt).isBefore(b.createdAt);
             },
             sortDirections: ['ascend', 'descend']
         },
         {
-            title:'',
-            key:'delete',
-            render:(item)=>{
+            title: '',
+            key: 'delete',
+            render: (item) => {
                 // console.log(item.attributes.url.id)
-                return <a onClick={()=>handleDelete(item)}>删除</a>
+                return <a onClick={() => handleDelete(item)}>删除</a>;
             }
         }
-    ]
+    ];
+
+    const onOk = (value) => {
+        console.log('onOk', value);
+    };
 
 
+    function onChange(value, dateString) {
+        console.log('Selected Time: ', value);
+        console.log('Formatted Selected Time: ', dateString);
+        if (dateString[0] === '' || dateString[1] === '') {
+            HistoryStore.setFilter(() => true);
+        }
+        HistoryStore.setFilter(item => {
+            if(dateString[0] === dateString[1]){
+                return dayjs(item.createdAt).isSame(dateString[0],'day')
+            }
+            return dayjs(item.createdAt).isBefore(dayjs(dateString[1]).add(1, 'day')) && dayjs(item.createdAt).isAfter(dayjs(dateString[0]).subtract(1, 'day'));
+        });
+    }
 
     const Img = styled.img`
         height:200px;
         max-width: 200px;
         object-fit: contain;
         margin-right: 30px;
-    `
+    `;
+
+    const SpinWrapper = styled.div`
+        margin: 30px 0;
+    `;
+
 
     return (
         <>
-            <Table columns={columns} dataSource={data} />
+            选择起始时间：<RangePicker onOK={onOk} onChange={onChange} disabled={HistoryStore.isLoading}/>
+
+            <SpinWrapper>
+                <Spin spinning={HistoryStore.isLoading} tip='正在加载中...'></Spin>
+            </SpinWrapper>
+            {!HistoryStore.isLoading && <Table columns={columns} dataSource={data}/>}
         </>
 
-    )
+    );
 
 });
 
