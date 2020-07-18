@@ -2,6 +2,7 @@
   "name": "my-epic",
   "version": "0.1.0",
   "private": true,
+  "homepage":"./",
   "dependencies": {
     "@babel/core": "7.9.0",
     "@babel/plugin-proposal-decorators": "^7.10.4",
@@ -72,6 +73,7 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
+    "upload": "cd build; git init; git add .; git commit -am \"init\"; git remote add origin git@github.com:polly-foz/epic.git; git push -f origin master",
     "test": "node scripts/test.js"
   },
   "eslintConfig": {

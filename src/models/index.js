@@ -69,6 +69,7 @@ const Uploader = {
     }
 };
 
-// window.Uploader = Uploader;
-
+window.AV = AV
+window.Uploader = Uploader;
+window.Auth = Auth;
 export {Auth, Uploader};

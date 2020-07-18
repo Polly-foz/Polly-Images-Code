@@ -46,6 +46,9 @@ const Component = observer(() => {
                             <div>
                                 <a href={item.attributes.url.attributes.url}>{item.attributes.url.attributes.url}</a>
                             </div>
+                            <div>
+                                {/*{item.createdAt}*/}
+                            </div>
                         </List.Item>)}>
                     {HistoryStore.isLoading && HistoryStore.hasMore && (
                         <div>
