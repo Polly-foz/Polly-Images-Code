@@ -4,6 +4,8 @@ import {useStores} from '../stores/index';
 import {List,Spin} from "antd";
 import InfiniteScroll from 'react-infinite-scroller';
 import styled from "styled-components";
+import dayjs from 'dayjs'
+
 const Component = observer(() => {
     const {HistoryStore} = useStores();
 
@@ -47,8 +49,9 @@ const Component = observer(() => {
                                 <a href={item.attributes.url.attributes.url}>{item.attributes.url.attributes.url}</a>
                             </div>
                             <div>
-                                {/*{item.createdAt}*/}
+                                {dayjs(item.createdAt).format('YYYY年MM月DD日 HH:mm:ss')}
                             </div>
+                            {/*<button onClick={()=>{console.log('item',item);window.item=item}}>log item</button>*/}
                         </List.Item>)}>
                     {HistoryStore.isLoading && HistoryStore.hasMore && (
                         <div>
