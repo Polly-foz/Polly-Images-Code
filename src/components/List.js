@@ -12,11 +12,11 @@ const Component = observer(() => {
     const {Search} = Input;
 
     useEffect(() => {
-        console.log('进入组件');
+        // console.log('进入组件');
         HistoryStore.findAll();
         // HistoryStore.reset()
         return () => {
-            console.log('退出组件');
+            // console.log('退出组件');
             HistoryStore.reset();
         };
     }, []);
@@ -25,8 +25,10 @@ const Component = observer(() => {
         window.avObject = avObject;
         // console.log('delete-avObject',avObject)
         HistoryStore.delete(avObject).then(result => {
-            console.log('删除成功', result);
-        }, error => console.log("删除失败", error));
+            // console.log('删除成功', result);
+        }, error => {
+            // console.log("删除失败", error);
+        });
     };
 
     const data = HistoryStore.filteredList;
@@ -88,15 +90,15 @@ const Component = observer(() => {
     ];
 
     const onOk = (value) => {
-        console.log('onOk', value);
+        // console.log('onOk', value);
     };
 
-    let dateFilter = ()=>true;
-    let nameFilter = ()=>true;
+    let dateFilter = () => true;
+    let nameFilter = () => true;
 
     function onChange(value, dateString) {
-        console.log('Selected Time: ', value);
-        console.log('Formatted Selected Time: ', dateString);
+        // console.log('Selected Time: ', value);
+        // console.log('Formatted Selected Time: ', dateString);
         if (dateString[0] === '' || dateString[1] === '') {
             dateFilter = () => true;
         } else if (dateString[0] === dateString[1]) {
@@ -106,18 +108,22 @@ const Component = observer(() => {
             dateFilter = item => dayjs(item.createdAt).isBefore(dayjs(dateString[1]).add(1, 'day')) && dayjs(item.createdAt).isAfter(dayjs(dateString[0]).subtract(1, 'day'));
             // return dayjs(item.createdAt).isBefore(dayjs(dateString[1]).add(1, 'day')) && dayjs(item.createdAt).isAfter(dayjs(dateString[0]).subtract(1, 'day'));
         }
-        HistoryStore.setFilter(item=>{return dateFilter(item)&&nameFilter(item)})
+        HistoryStore.setFilter(item => {
+            return dateFilter(item) && nameFilter(item);
+        });
     }
 
 
     function onSearch(value) {
-        console.log('search', value);
-        if(value===''){
-            dateFilter = ()=>true
-        }else{
-            dateFilter = item=>item.attributes.filename.indexOf(value)>=0
+        // console.log('search', value);
+        if (value === '') {
+            dateFilter = () => true;
+        } else {
+            dateFilter = item => item.attributes.filename.indexOf(value) >= 0;
         }
-        HistoryStore.setFilter(item=>{return dateFilter(item)&&nameFilter(item)})
+        HistoryStore.setFilter(item => {
+            return dateFilter(item) && nameFilter(item);
+        });
     };
 
     const Img = styled.img`
