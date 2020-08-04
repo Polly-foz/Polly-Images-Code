@@ -1,11 +1,11 @@
 import AV, {Query, User} from 'leancloud-storage';
-
+import appInfo from './appInfo'
 console.log('AV: ', AV);
 
 AV.init({
-    appId: "5rNBCHoC93QGdT46Wto1Ouqk-gzGzoHsz",
-    appKey: "6ToblRTyjDWoIOvJLEREfjLM",
-    serverURL: "https://5rnbchoc.lc-cn-n1-shared.com"
+    appId: appInfo.appId,
+    appKey: appInfo.appKey,
+    serverURL: appInfo.serverURL
 });
 
 const Auth = {
